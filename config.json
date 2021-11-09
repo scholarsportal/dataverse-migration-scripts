@@ -1,0 +1,17 @@
+{
+  "base_url_origin": "",
+  "api_token_origin": "",
+  "base_url_target": "http://localhost:8080",
+  "api_token_target":  "",
+  "dataverse_alias": "",
+  "dr": "",
+  "prefix_DOI": "",
+  "db_name": "",
+  "db_user": "",
+  "db_password": "",
+  "db_host":  "",
+  "db_port": "",
+  "builtin_users_key": "",
+  "password": "",
+  "directories": []
+}
