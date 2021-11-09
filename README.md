@@ -1,5 +1,6 @@
 # dataverse-migration-scripts
 Scripts for migrating datasets from one Dataverse installation to another
+We are using python 3 and pyDataverse https://pydataverse.readthedocs.io/en/latest/
 ## config.json 
   It should be filled with information regarding source installation, target installation, api tokens etc. 
   1. "directories" should be an array of datasets in original dataverse that one wants to migrate, for example ['QBAYAF', 'KBHUA6'] with corresponding persistentId's doi:10.5072/FK2/QBAYAF, doi:10.5072/FK2/KBHUA.
@@ -14,4 +15,7 @@ Scripts for migrating datasets from one Dataverse installation to another
   10. db_port" should be port of target database.
   11. "builtin_users_key" should be BuiltinUsers.KEY from settings table of target installation.
   12. "password" should be initial password of new built in user that will be created in target installation.
+## versions_files.py
+It is main script for creating datasets with all the versons and files in the target installation. DOIs for published datasets will be preserved, for unpublished datasets new persistent identifiers will be created.
+At the end script also creates corresponse between database ids of datasets of old installation and new installation. These ids are in created _correspondense_old_new.json_ file. Corresponse between ids of DataFiles of old installation and new installation will be saved in _all_data_files.json_. _versions_files.log_ is also created. 
   
