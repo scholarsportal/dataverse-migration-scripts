@@ -22,3 +22,5 @@ At the end script also creates corresponse between database ids of datasets of o
 This script creates dataverses in target dataverse (with dataverse_alias) from root dataverse of original installation. It also creates _dataverses.json_ file with all dataverses aliases and old ids of old installation.
 ## create_coorespondence.py
 This script creates _correspondense.json_ file that containes correspondense between dataverses and datasets that belong to them.
+## move_datasets.py
+This script moves datasets created by _versions_files.py_ to dataverses created by _create_dataverses.py_. It uses _create_coorespondence.py_.
