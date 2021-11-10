@@ -60,3 +60,9 @@ This script creates _correspondence_explicit_groups.json_ that has a corresonden
 This script assignes roles for dataverses. It uses _dataverses.json_ file that was created by _create_dataverses.py_ and _correspondence_explicit_groups.json_ that was created by _correspondence_explicit_groups.py_
 ## role_datasets.py
 This script assign roles for datasets. It uses _dataverses.json_ file that was created by _create_dataverses.py_ and _correspondence_explicit_groups.json_ that was created by _correspondence_explicit_groups.py_
+## change_registration_DOI.py
+This script updates DOI registration metadata
+##
+
+
+The last step of migration is deleting all _.cached_ files of datasets that were migrated.
