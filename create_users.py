@@ -9,7 +9,7 @@ def main():
     url = config.base_url_target + '/api/builtin-users?key={0}&password={1}&sendEmailNotification=false'.format(config.builtin_users_key, config.password)
     print(url)
     headers = {"Content-type":"application/json"}
-    with open('Alberta-list-users.txt') as f:
+    with open('users.json') as f:
         data = json.load(f)
     count = 0
     for user in data['data']['users']:
