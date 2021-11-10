@@ -24,3 +24,11 @@ This script creates dataverses in target dataverse (with dataverse_alias) from r
 This script creates _correspondense.json_ file that containes correspondense between dataverses and datasets that belong to them.
 ## move_datasets.py
 This script moves datasets created by _versions_files.py_ to dataverses created by _create_dataverses.py_. It uses _create_coorespondence.py_.
+## update_dates_dataverses.py
+This script updates dates for migrated dataverses in dvobject table of target installation. It uses _psycopg2-binary_ that can be installed by `pip install psycopg2-binary` 
+
+It needs _dataverse_dates.json_ that can be generated from original installation using the following query:
+
+`select id, createdate, modificationtime, publicationdate from dvobject where where dtype='Dataverse'` 
+
+and convert it into json format.
