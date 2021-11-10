@@ -56,3 +56,5 @@ This script creates builtin users in target installation. It uses users.json tha
 This script creates explicit groups and assign them to dataverses. It uses _dataverses.json_ that was created by _create_dataverses.json_
 ## correspondence_explicit_groups.py
 This script creates _correspondence_explicit_groups.json_ that has a corresondence between explicit groups of old and new installations.
+## role_dataverses.py
+This script assignes roles for dataverses. It uses _dataverses.json_ file that was created by _create_dataverses.py_ and _correspondence_explicit_groups.json_ that was created by _correspondence_explicit_groups.py_
