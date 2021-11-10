@@ -36,3 +36,18 @@ and convert it into json format.
 This script updates dates for migrated datasets. It updates datasetversion table of target installation. It uses _correspondense_old_new.json_ that was created by _versions_files.py_.
 ## update_dates_dvobject.py
 This script updates dates in dvobject for migrated datasets. It uses _correspondense_old_new.json_ that was created by _versions_files.py_.
+## update_dates_datafiles.py
+This scripts updates dates for migrated datafiles in dvobject table of target installation. It uses _all_data_files.json_ that was created by _versions_files.py_ and _datafile_dates.json_ that can be generated from original installation using  the following query:
+
+`select id, createdate, modificationtime, publicationdate from dvobject where where dtype='DataFile'`
+
+and convert it into json format.
+
+For dates to take effect in targeted installation, solr reindexing in place should be performed.
+
+`curl -X DELETE http://localhost:8080/api/admin/index/timestamps`
+
+`curl http://localhost:8080/api/admin/index/continue`
+
+This reindexing can be done at the end of migration process.
+
