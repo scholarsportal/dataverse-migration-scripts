@@ -51,5 +51,7 @@ For dates to take effect in targeted installation, solr reindexing in place shou
 
 This reindexing can be done at the end of migration process.
 ## create_users.py
-This script creates builtin users in target installation. It uses users.json that contains list of all the users from original installation. 
+This script creates builtin users in target installation. It uses users.json that contains list of all the users from original installation.
+## explicit_groups.py
+This script creates explicit groups and assign them to dataverses. It uses _dataverses.json_ that was created by _create_dataverses.json_
 
