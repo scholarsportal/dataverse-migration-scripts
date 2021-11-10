@@ -34,3 +34,5 @@ It needs _dataverse_dates.json_ that can be generated from original installation
 and convert it into json format.
 ## update_dates.py
 This script updates dates for migrated datasets. It updates datasetversion table of target installation. It uses _correspondense_old_new.json_ that was created by _versions_files.py_.
+## update_dates_dvobject.py
+This script updates dates in dvobject for migrated datasets. It uses _correspondense_old_new.json_ that was created by _versions_files.py_.
