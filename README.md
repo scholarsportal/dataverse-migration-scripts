@@ -15,6 +15,8 @@ We are using python 3 and pyDataverse https://pydataverse.readthedocs.io/en/late
   10. db_port" should be port of target database.
   11. "builtin_users_key" should be BuiltinUsers.KEY from settings table of target installation.
   12. "password" should be initial password of new built in user that will be created in target installation.
+## number_of_dt_dv.py
+This is optinal script. It lists all the datasets in root dataverse of original installation recursivelly. It can be used to fill _directories_ field in _config.json_
 ## versions_files.py
 It is main script for creating datasets with all the versons and files in the target installation. DOIs for published datasets will be preserved, for unpublished datasets new persistent identifiers will be created.
 At the end script also creates corresponse between database ids of datasets of old installation and new installation. These ids are in created _correspondense_old_new.json_ file. Corresponse between ids of DataFiles of old installation and new installation will be saved in _all_data_files.json_. _versions_files.log_ is also created. 
