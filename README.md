@@ -32,3 +32,5 @@ It needs _dataverse_dates.json_ that can be generated from original installation
 `select id, createdate, modificationtime, publicationdate from dvobject where where dtype='Dataverse'` 
 
 and convert it into json format.
+## update_dates.py
+This script updates dates for migrated datasets. It updates datasetversion table of target installation. It uses _correspondense_old_new.json_ that was created by _versions_files.py_.
