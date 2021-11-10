@@ -37,7 +37,7 @@ This script updates dates for migrated datasets. It updates datasetversion table
 ## update_dates_dvobject.py
 This script updates dates in dvobject for migrated datasets. It uses _correspondense_old_new.json_ that was created by _versions_files.py_.
 ## update_dates_datafiles.py
-This scripts updates dates for migrated datafiles in dvobject table of target installation. It uses _all_data_files.json_ that was created by _versions_files.py_ and _datafile_dates.json_ that can be generated from original installation using  the following query:
+This script updates dates for migrated datafiles in dvobject table of target installation. It uses _all_data_files.json_ that was created by _versions_files.py_ and _datafile_dates.json_ that can be generated from original installation using  the following query:
 
 `select id, createdate, modificationtime, publicationdate from dvobject where where dtype='DataFile'`
 
@@ -50,4 +50,6 @@ For dates to take effect in targeted installation, solr reindexing in place shou
 `curl http://localhost:8080/api/admin/index/continue`
 
 This reindexing can be done at the end of migration process.
+## create_users.py
+This script creates builtin users in target installation. It uses users.json that contains list of all the users from original installation. 
 
