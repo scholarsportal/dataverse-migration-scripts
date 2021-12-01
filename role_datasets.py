@@ -4,7 +4,7 @@ from config import Config
 
 config = Config()
 def main():
-    with open('correspondense_old_new.json') as f:
+    with open('correspondence_old_new.json') as f:
         data = json.load(f)
     with open('correspondence_explicit_groups.json') as explicit:
         groups = json.load(explicit)

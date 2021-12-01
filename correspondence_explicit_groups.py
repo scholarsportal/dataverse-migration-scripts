@@ -31,7 +31,6 @@ def main():
         alias = dv['dataverse_alias']
         alias_target = alias
 
-
         url_ds = url + alias + '/groups'
         url_ds_target = url_target + alias_target + '/groups/'
         resp = config.api_origin.get_request(url_ds)

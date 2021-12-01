@@ -194,7 +194,6 @@ def update_files(files_list, total_files, DOI_NEW):
         if 'provFreeform' in file:
             metadata_json["provFreeform"] = file['provFreeform']
 
-
         url = config.base_url_target + '/api/files/{0}/metadata'.format(new_id)
 
         json_input = io.StringIO(json.dumps(metadata_json))
@@ -379,12 +378,12 @@ def check_and_update_subject(version):
 
     return version
 
-def create_version(version, only, DOI, DOI_NEW, dir_path, total_files, correspondense, first):
+def create_version(version, only, DOI, DOI_NEW, dir_path, total_files, correspondence, first):
 
     try:
         if 'versionState' in version:
             if version['versionState'] == 'DEACCESSIONED':
-                return True, correspondense, first
+                return True, correspondence, first
             if version['versionState'] == 'DRAFT':
                 v = ':draft'
                 vm = 0
@@ -418,19 +417,19 @@ def create_version(version, only, DOI, DOI_NEW, dir_path, total_files, correspon
             if resp.status_code == 200 or resp.status_code == 201:
                 first = False
                 new_dataset_id = resp.json()['data']['id']
-                correspondense[old_dataset_id] = new_dataset_id #old dataset id with new one
+                correspondence[old_dataset_id] = new_dataset_id # old dataset id with new one
                 status = add_files(files_list,  DOI_NEW, dir_path, total_files)
                 if status == False:
-                    return False, correspondense, first
+                    return False, correspondence, first
                 if v != ':draft':
                     status = publish_version(vm, DOI_NEW)
                     if status == False:
-                        return False, correspondense, first
+                        return False, correspondence, first
             else:
                 logging.error("create_version func: Create dataset error for {}, status {}".format( DOI, resp.status_code))
-                return False, correspondense, first
+                return False, correspondence, first
         else:
-            #Update metadata
+            # Update metadata
             version = check_and_update_subject(version)
             url = config.api_target.base_url_api_native
             url += "/datasets/:persistentId/versions/:draft?persistentId={0}".format(DOI_NEW)
@@ -441,21 +440,21 @@ def create_version(version, only, DOI, DOI_NEW, dir_path, total_files, correspon
                 sys.exit()
             if r.status_code != 200:
                 logging.error("create_version func: Update dataset metadata error for {}, status {}".format(DOI, r.status_code) )
-                return False, correspondense, first
+                return False, correspondence, first
 
-            #Delete files
+            # Delete files
             du_files = check_delete_files(files_list, total_files)
             if len(du_files) > 0:
                 status = delete_files(du_files, total_files, DOI_NEW)
                 if status == False:
-                    return False, correspondense, first
+                    return False, correspondence, first
                 r = config.api_target.get_dataset(DOI_NEW, ":latest")
                 if r.status_code == 503:
                     logging.critical("503 - Server {} is unavailable".format(config.base_url_target))
                     sys.exit()
                 if r.status_code != 200:
                     logging.error("create_version func: Get dataset metadata error for {}, status {}".format(DOI, r.status_code ))
-                    return False, correspondense, first
+                    return False, correspondence, first
                 fields = r.json()['data']['latestVersion']['metadataBlocks']['citation']['fields']
                 for field in fields:
                     if field['typeName'] == 'producer':
@@ -469,22 +468,22 @@ def create_version(version, only, DOI, DOI_NEW, dir_path, total_files, correspon
                             version['metadataBlocks']['citation']['fields'].append(field)
                         break
 
-            #Add files
+            # Add files
             a_files = check_add_files(files_list, total_files)
             status = add_files(a_files[0], DOI_NEW, dir_path, total_files)
             if status == False:
-                return False, correspondense, first
+                return False, correspondence, first
             update_files(a_files[1], total_files, DOI_NEW)
             if v != ':draft':
                 status = publish_version(vm, DOI_NEW)
                 if status == False:
-                    return False, correspondense, first
+                    return False, correspondence, first
 
     except Exception as e:
         logging.error("create_version func: dataset {} Error {}".format(DOI,e))
-        return False, correspondense, first
+        return False, correspondence, first
 
-    return True, correspondense, first
+    return True, correspondence, first
 
 def get_datasets(parent, datasets):
 
@@ -507,7 +506,7 @@ def main():
     logging.info("Program started {}".format(now))
     logging.info(config.dr)
     logging.info("Number of datasets {}".format(len(config.directories)))
-    correspondense = {}
+    correspondence = {}
     all_total_files = {}
     for directory in config.directories:
         try:
@@ -536,8 +535,8 @@ def main():
                 versions.sort(key=take_version)
             first = True
             for version in versions:
-                cv = create_version(version, only, DOI, DOI_NEW, dir_path, total_files, correspondense, first)
-                correspondense = cv[1]
+                cv = create_version(version, only, DOI, DOI_NEW, dir_path, total_files, correspondence, first)
+                correspondence = cv[1]
                 cv_status = cv[0]
                 first = cv[2]
                 if cv_status == False:
@@ -555,11 +554,12 @@ def main():
         except Exception as e:
                 print(e)
 
-    with open('correspondense_old_new.json', 'w') as outfile:
-        json.dump(correspondense, outfile, indent=4, sort_keys=True)
+    with open('correspondence_old_new.json', 'w') as outfile:
+        json.dump(correspondence, outfile, indent=4, sort_keys=True)
     with open('all_data_files.json', 'w') as outfile:
         json.dump(all_total_files, outfile, indent=4, sort_keys=True)
     now = datetime.now()
     logging.info("Program ended {}".format(now))
+
 if __name__ == "__main__":
     main()
