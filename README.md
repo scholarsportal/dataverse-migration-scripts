@@ -1,6 +1,6 @@
 # dataverse-migration-scripts
 
-Scripts for migrating datasets from one [Dataverse repository](https://dataverse.org) installation to another. These scripts were used to migrate datasets from version 4.20 (University of Alberta) to version 5.1 (Scholars Portal). For these scripts to work with other versions, updates may be needed.
+Scripts for migrating datasets from one [Dataverse repository](https://dataverse.org) installation to another. These scripts were used to migrate datasets from version 4.20 (University of Alberta) to version 5.1 (Scholars Portal). For these scripts to work with other versions, updates may be needed. These scripts do not use the migration APIs that were added in version 5.6.
 
 We are using Python 3 and [pyDataverse](https://pydataverse.readthedocs.io/en/latest/).
 
