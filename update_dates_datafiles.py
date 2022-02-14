@@ -63,8 +63,6 @@ def main():
             dt['publicationdate'] = d['publicationdate']
             new_id = corr[str(id_old)]
 
-
-
             createdate = d['createdate']
             modificationtime = d['modificationtime']
             publicationdate = d['publicationdate']

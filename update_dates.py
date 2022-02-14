@@ -57,10 +57,9 @@ def take_version(elem):
         else:
             return v + mv / (len(str(mv)) * 10)
 
-
 def main():
 
-    with open('correspondense_old_new.json') as f:
+    with open('correspondence_old_new.json') as f:
         datasets = json.load(f)
     try:
         connection = create_connection(config.db_name, config.db_user, config.db_password, config.db_host, config.db_port)
@@ -160,8 +159,6 @@ def main():
                         connection.close()
                         connection = create_connection(config.db_name, config.db_user, config.db_password,
                                                        config.db_host, config.db_port)
-
-
 
         connection.close()
     except Exception as e:

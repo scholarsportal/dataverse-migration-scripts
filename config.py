@@ -3,7 +3,6 @@ import json
 
 class Config:
 
-
     def __init__(self):
         with open('config.json') as f:
             conf = json.load(f)
@@ -25,7 +24,6 @@ class Config:
         self.api_target = NativeApi(self.base_url_target, self.api_token_target)
         self.data_api_target = DataAccessApi(self.base_url_target, self.api_token_target)
 
-
         #database
         self.db_name = conf['db_name']
         self.db_user = conf['db_user']
@@ -36,4 +34,3 @@ class Config:
         #users
         self.builtin_users_key = conf['builtin_users_key']
         self.password = conf['password']
-

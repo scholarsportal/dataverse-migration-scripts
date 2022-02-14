@@ -74,10 +74,9 @@ def take_version(elem):
             print(v + mv / (len(str(mv)) * 10))
             return v + mv / (len(str(mv)) * 10)
 
-
 def main():
 
-    with open('correspondense_old_new.json') as f:
+    with open('correspondence_old_new.json') as f:
         datasets = json.load(f)
     try:
         connection = create_connection(config.db_name, config.db_user, config.db_password, config.db_host, config.db_port)
@@ -118,6 +117,7 @@ def main():
                 all_versions_origin.sort(key=take_version)
                 n = len(all_versions_origin) - len(all_versions_target)
                 print(n)
+
                 if (n == 0 or n != 0):
                     first_version = all_versions_origin[n]
                     print("First version")
@@ -146,8 +146,6 @@ def main():
                                 publicationdate, modificationtime, new_id)
                             print(query)
                             execute_query(connection, query)
-
-
                     else:
                         if 'lastUpdateTime' in latest_version and 'createTime' in first_version:
                             modificationtime = latest_version['lastUpdateTime']

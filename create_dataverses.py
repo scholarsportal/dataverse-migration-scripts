@@ -44,14 +44,14 @@ def find_dataverses(data, parent):
 
     return dataverses
 
-def find_correspondense(tree, parent, d):
+def find_correspondence(tree, parent, d):
     for data in tree:
         if data["type"] == "dataset":
             d[data['pid']] = parent
         if data["type"] == "dataverse":
             if "children" in data:
                 if len(data["children"]) > 0:
-                    d = find_correspondense(data["children"], data["dataverse_alias"],d)
+                    d = find_correspondence(data["children"], data["dataverse_alias"],d)
 
     return d
 
