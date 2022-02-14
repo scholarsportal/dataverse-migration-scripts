@@ -183,8 +183,8 @@ def update_files(files_list, total_files, DOI_NEW):
         metadata_json = {}
         if 'description' in file:
             metadata_json["description"] = file['description']
-        if 'label' in file:
-            metadata_json["label"] = file['label']
+        #if 'label' in file:
+        #    metadata_json["label"] = file['label']
         if 'directoryLabel' in file:
             metadata_json["directoryLabel"] = file['directoryLabel']
         if 'categories' in file:
@@ -212,6 +212,8 @@ def update_files(files_list, total_files, DOI_NEW):
 def add_files(files_list, DOI_NEW, dir_path, total_files):
 
     for file in files_list:
+        logging.info("-----------------------");
+        logging.info("Starting {0}".format(file["dataFile"]["filename"]))
         try:
             filename_zip = False
             filename = file["dataFile"]["filename"]
@@ -219,6 +221,7 @@ def add_files(files_list, DOI_NEW, dir_path, total_files):
             storageIdentifier = file["dataFile"]['storageIdentifier'][index+1:]
             if 'originalFileFormat' in file["dataFile"]:
                 originalFileFormat = file["dataFile"]['originalFileFormat']
+                logging.info("Original file format {0}".format(originalFileFormat))
                 ext = find_extension(originalFileFormat)
                 index = filename.rfind(".")
                 filename = filename[0:index] + ext
@@ -235,7 +238,7 @@ def add_files(files_list, DOI_NEW, dir_path, total_files):
                         myzip.write(f_input, filename)
 
             df = Datafile()
-
+            logging.info("Type file {0}".format(typeFile))
             df_dict = {
                 "pid": DOI_NEW,
                 "filename": filename,
@@ -253,13 +256,15 @@ def add_files(files_list, DOI_NEW, dir_path, total_files):
                 df_dict['restrict'] = file['restricted']
             if 'directoryLabel' in file:
                 df_dict['directoryLabel'] = file['directoryLabel']
-            if 'label' in file:
-                df_dict['label'] = file['label']
+            #if 'label' in file:
+            #    df_dict['label'] = file['label']
             if 'provFreeform' in file:
                 df_dict["provFreeform"] = file['provFreeform']
 
 
             df.set(df_dict)
+            logging.info(df.json());
+            logging.info("It is filename {0}".format(filename))
             if not filename_zip:
                 full_filename = dir_path + '/'  + storageIdentifier
             else:
