@@ -9,7 +9,7 @@ def main():
     dataverses = utils.dataverse_tree_walker(resp)
     datasets = dataverses[1]
     print("Number of datasets ", len(datasets))
-    print("Number of dataveres ", len(dataverses[0]))
+    print("Number of dataverses ", len(dataverses[0]))
     print(datasets)
 
     directories = []
