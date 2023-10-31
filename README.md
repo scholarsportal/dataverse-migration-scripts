@@ -78,7 +78,7 @@ This script updates dates in the dvobject table for migrated datasets. It uses `
 This script updates dates for migrated datafiles in dvobject table of target installation. It uses `all_data_files.json` that was created by `versions_files.py` and `datafile_dates.json` that can be generated from original installation using the following query:
 
 ```sql
-select id, createdate, modificationtime, publicationdate from dvobject where where dtype='DataFile'
+select id, createdate, modificationtime, publicationdate from dvobject where dtype='DataFile'
 ```
 
 ...and convert it into JSON format.
