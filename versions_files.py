@@ -13,6 +13,7 @@ config = Config()
 total_files_names = json.loads('{}')
 
 def take_version(elem):
+
     if 'versionNumber' not in elem:
         return sys.maxsize
 
@@ -209,6 +210,7 @@ def update_files(files_list, total_files, DOI_NEW):
 
 
 def add_files(files_list, DOI_NEW, dir_path, total_files):
+    return(True)
 
     for file in files_list:
         logging.info("-----------------------");
@@ -416,6 +418,8 @@ def create_version(version, only, DOI, DOI_NEW, dir_path, total_files, correspon
                 resp = config.api_target.create_dataset(config.dataverse_alias, s)
                 if resp.status_code == 201:
                     DOI_NEW = resp.json()['data']['persistentId']
+                else:
+                    logging.error(resp.json())
             if resp.status_code == 503:
                 logging.critical("503 - Server {} is unavailable".format(config.base_url_target))
                 sys.exit()
@@ -491,7 +495,7 @@ def create_version(version, only, DOI, DOI_NEW, dir_path, total_files, correspon
     return True, correspondence, first
 
 def get_datasets(parent, datasets):
-
+    print(parent)
     resp = config.api_origin.get_dataverse_contents(parent)
     if resp.status_code == 200:
         dataverses = resp.json()['data']
@@ -518,7 +522,7 @@ def main():
             now = datetime.now()
             logging.info("Dataset {} started {} ".format(directory, now))
             total_files = json.loads('{}')
-            DOI = config.prefix_DOI + "/" + directory
+            DOI = "doi:" + directory
             dir_path = config.dr + "/" + directory
             DOI_NEW = DOI
             resp = config.api_target.destroy_dataset(DOI)

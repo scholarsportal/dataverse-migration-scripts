@@ -6,6 +6,7 @@ class Config:
     def __init__(self):
         with open('config.json') as f:
             conf = json.load(f)
+
         self.base_url_origin = conf['base_url_origin']
         self.api_token_origin = conf['api_token_origin']
 
@@ -14,7 +15,6 @@ class Config:
 
         self.dataverse_alias = conf['dataverse_alias']
         self.dr =  conf['dr']
-        self.prefix_DOI = conf['prefix_DOI']
 
         self.directories = conf['directories']
 

@@ -56,20 +56,20 @@ def find_correspondence(tree, parent, d):
     return d
 
 def main():
-    resp = config.api_origin.get_children(":root", "dataverse", ["dataverses", "datasets" ])
+    resp = config.api_origin.get_children(config.dataverse_alias, "dataverse", ["dataverses", "datasets" ])
 
     dataverses = utils.dataverse_tree_walker(resp)
-
     dvs = dataverses[0]
     with open('dataverses.json', 'w') as outfile:
         json.dump(dvs, outfile, indent=4, sort_keys=True)
-
     for dv in dvs:
         resp = config.api_origin.get_dataverse(dv['dataverse_id'])
+        print(resp.json())
         dv_metadata = resp.json()['data']
         owner_id = dv_metadata['ownerId']
         if owner_id != 1:
             parent_alias = config.api_origin.dataverse_id2alias(owner_id)
+            print(parent_alias)
         else:
             parent_alias = config.dataverse_alias
         try:

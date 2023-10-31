@@ -18,9 +18,7 @@ def find_correspondence(tree, parent, d):
     return d
 
 def main():
-    resp = config.api_origin.get_children(":root", "dataverse", ["dataverses", "datasets"])
-    print(resp)
-    print(len(resp))
+    resp = config.api_origin.get_children(config.dataverse_alias, "dataverse", ["dataverses", "datasets"])
 
     d = {}
     d = find_correspondence(resp, ":root", d)

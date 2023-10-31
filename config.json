@@ -1,11 +1,10 @@
 {
-  "base_url_origin": "",
-  "api_token_origin": "",
+  "base_url_origin": "https://dataverse.lib.umanitoba.ca",
+  "api_token_origin": "293ab9d6-6501-4180-9d44-270a97cd6c5c",
   "base_url_target": "http://localhost:8080",
-  "api_token_target":  "",
-  "dataverse_alias": "",
-  "dr": "",
-  "prefix_DOI": "",
+  "api_token_target":  "0e813d1b-4cd6-4056-b6b1-8cf06d20fdb1",
+  "dataverse_alias":":root",
+  "dr": "/Users/tameem/Desktop/dataverse/dataverse_migration/dataverse-migration-scripts",
   "db_name": "",
   "db_user": "",
   "db_password": "",
@@ -13,5 +12,6 @@
   "db_port": "",
   "builtin_users_key": "",
   "password": "",
-  "directories": []
+  "directories": ["10.34990/FK2/IZ3M32", "10.34990/FK2/4KBJPN", "10.34990/FK2/SHQJWT"]
 }
+
