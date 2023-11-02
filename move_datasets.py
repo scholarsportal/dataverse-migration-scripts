@@ -16,7 +16,7 @@ def main():
     for old_id in old_new_datasets:
         new_id = old_new_datasets[old_id]
         dataverse = dataset_dataverse[old_id]
-        if dataverse == ":root":
+        if dataverse == "um":
             dataverse = config.dataverse_alias
         print(str(new_id) + " " + dataverse )
         url_move = url + str(new_id) + "/move/" + dataverse

@@ -5,7 +5,7 @@ config = Config()
 
 def main():
 
-    resp = config.api_origin.get_children(":root", "dataverse", ["dataverses", "datasets"])
+    resp = config.api_origin.get_children("um", "dataverse", ["dataverses", "datasets"])
     dataverses = utils.dataverse_tree_walker(resp)
     datasets = dataverses[1]
     print("Number of datasets ", len(datasets))
