@@ -1,17 +1,37 @@
 import pyDataverse.utils as utils
+import requests
+
 from config import Config
 
 config = Config()
 
+def dataverse_root_search():
+    url = "https://dataverse.lib.umanitoba.ca/api/search?q=*&type=dataverse&subtree=um&&per_page=1000"
+    token = "293ab9d6-6501-4180-9d44-270a97cd6c5c"
+    head = {'X-Dataverse-key': 'token {}'.format(token)}
+    response = requests.get(url, headers=head)
+
+    dict = response.json()
+    dv = (dict['data']['items'])
+    dv_id_lst = [x['identifier'] for x in dv]
+
+    return(dv_id_lst)
+
 def main():
 
-    resp = config.api_origin.get_children("um", "dataverse", ["dataverses", "datasets"])
-    dataverses = utils.dataverse_tree_walker(resp)
-    datasets = dataverses[1]
+    dv_list = dataverse_root_search()
+    datasets = []
+    for dv in dv_list:
+        resp = config.api_origin.get_children(dv, "dataverse", ["dataverses", "datasets"])
+        dataverses = utils.dataverse_tree_walker(resp)
+        datasets += dataverses[1]
+        datasets = [dict(t) for t in {tuple(d.items()) for d in datasets}]
+
     print("Number of datasets ", len(datasets))
-    print("Number of dataverses ", len(dataverses[0]))
+    print("Number of dataverses ", len(dv_list))
     print(datasets)
 
+    """
     directories = []
     for dataset in datasets:
        doi = dataset['pid']
@@ -20,6 +40,7 @@ def main():
        directories.append(dr)
     print("Number of directories", len(directories) )
     print(directories)
+    """
 
 if __name__ == "__main__":
     main()
