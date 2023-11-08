@@ -6,18 +6,24 @@ from config import Config
 
 config = Config()
 
-def dataverse_root_search():
+def all_dataverses_alias():
     url = "https://dataverse.lib.umanitoba.ca/api/search?q=*&type=dataverse&subtree=um&&per_page=1000"
     token = "293ab9d6-6501-4180-9d44-270a97cd6c5c"
     head = {'X-Dataverse-key': 'token {}'.format(token)}
     response = requests.get(url, headers=head)
+
     dict = response.json()
     dv = (dict['data']['items'])
-    for x in dv:
-        if x['identifier'] == "FowkeLab":
-            print(x)
-        #resp = config.api_origin.get_dataverse(x['identifier'])
-        #print(x['identifier'], resp.json()['data']['id'])
+    dv_id_lst = [x['identifier'] for x in dv]
+    return(dv_id_lst)
+
+def get_dataverse_api_data(dataverse):
+    url = "https://dataverse.lib.umanitoba.ca/api/v1/dataverses/" + dataverse
+    token = "293ab9d6-6501-4180-9d44-270a97cd6c5c"
+    response = requests.get(url)
+    dict = response.json()
+    return (dict['data'])
+
 def find_dataverses(data, parent):
     dataverses = []
     if type(data) == list:
@@ -29,7 +35,7 @@ def find_dataverses(data, parent):
             dv = config.api_origin.get_dataverse(data['dataverse_id'])
             d =  dv.json()
             metadata = json.dumps(d['data'])
-            if parent == 'um':
+            if parent == 'mu':
                 ds = {
                     "parent": config.dataverse_alias,
                     "child": data['dataverse_id']
@@ -68,49 +74,62 @@ def find_correspondence(tree, parent, d):
     return d
 
 def main():
-    #dataverse_root_search()
-    #print(find_dataverses("FowkeLab"))
-    dataverse_root_search()
-    resp = config.api_origin.get_children(config.dataverse_alias, "dataverse", ["dataverses", "datasets" ])
-    #print(resp)
-    #config.api_origin.get_dataverse(data['dataverse_id'])
+    mu_dataverse_collection = all_dataverses_alias()
+    dataverses_added = []
+    #mu_dataverse_collection = ['mincome']
 
-    dataverses = utils.dataverse_tree_walker(resp)
-    dvs = dataverses[0]
-    with open('dataverses.json', 'w') as outfile:
-        json.dump(dvs, outfile, indent=4, sort_keys=True)
-    for dv in dvs:
-        #resp = config.api_origin.get_dataverse(dv['dataverse_id'])
-        #don't use dataverse_id, alies
-        print(resp.json())
-        dv_metadata = resp.json()['data']
-        owner_id = dv_metadata['ownerId']
+    while len(mu_dataverse_collection) > 0:
 
-        if owner_id != 1:
-            parent_alias = config.api_origin.dataverse_id2alias(owner_id)
-            print(parent_alias)
+        mu_dataverse = mu_dataverse_collection[0]
+
+        print(mu_dataverse)
+
+        mu_dataverse_data = get_dataverse_api_data(mu_dataverse)
+        mu_dataverse_id = get_dataverse_api_data(mu_dataverse)["id"]
+        mu_dataverse_owner_id = get_dataverse_api_data(mu_dataverse)["ownerId"]
+
+        if mu_dataverse_owner_id == 1 or mu_dataverse_owner_id in dataverses_added:
+
+            resp = config.api_origin.get_children(mu_dataverse, "dataverse", ["dataverses", "datasets"])
+            child_dataverses = utils.dataverse_tree_walker(resp)
+            dvs = child_dataverses[0]
+
+            with open('dataverses.json', 'w') as outfile:
+                json.dump(dvs, outfile, indent=4, sort_keys=True)
+
+            resp = config.api_origin.get_dataverse(mu_dataverse_id)
+            dv_metadata = resp.json()['data']
+
+            try:
+                if mu_dataverse_owner_id == 1:
+                    resp = config.api_target.create_dataverse(":root", json.dumps(dv_metadata))
+                else:
+                    parent_alias = config.api_origin.dataverse_id2alias(mu_dataverse_owner_id)
+                    resp = config.api_target.create_dataverse(parent_alias, json.dumps(dv_metadata))
+            except Exception as e:
+                print(resp.status_code)
+                print(e)
+                #continue
+            url = config.base_url_origin + "/dvn/api/data-deposit/v1.1/swordv2/collection/dataverse/" + mu_dataverse
+            req = requests.get(url, auth=(config.api_token_origin, ''))
+
+            if req.status_code == 200:
+                root = ElementTree.fromstring(req.content)
+                for child in root.iter("{http://purl.org/net/sword/terms/state}dataverseHasBeenReleased"):
+                    if child.text == "true":
+                        print("Publishing dataverse " + mu_dataverse)
+                        r = config.api_target.publish_dataverse(mu_dataverse)
+                        print(r.status_code)
+                    break
+
+            else:
+                print(mu_dataverse + " error getting publishing status " + str(req.status_code))
+
+            dataverses_added.append(mu_dataverse_id)
+            mu_dataverse_collection.pop(0)
+
         else:
-            parent_alias = config.dataverse_alias
-        try:
-            resp = config.api_target.create_dataverse(parent_alias, json.dumps(dv_metadata))
-        except Exception as e:
-            print(resp.status_code)
-            print(e)
-            continue
-        url = config.base_url_origin +   "/dvn/api/data-deposit/v1.1/swordv2/collection/dataverse/" + dv['dataverse_alias']
-        print(url)
-        req = requests.get(url, auth=(config.api_token_origin, ''))
-        print(req.status_code)
+            mu_dataverse_collection = mu_dataverse_collection[1:] + [mu_dataverse]
 
-        if req.status_code == 200:
-            root = ElementTree.fromstring(req.content)
-            for child in root.iter("{http://purl.org/net/sword/terms/state}dataverseHasBeenReleased"):
-                if child.text == "true":
-                    print("Publishing dataverse " + dv['dataverse_alias'])
-                    r = config.api_target.publish_dataverse(dv['dataverse_alias'])
-                    print(r.status_code)
-                break
-        else:
-            print(dv['dataverse_alias'] + " error getting publishing status " + req.status_code)
 if __name__ == "__main__":
     main()
