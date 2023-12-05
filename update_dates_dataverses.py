@@ -23,6 +23,7 @@ def create_connection(db_name, db_user, db_password, db_host, db_port):
 def execute_query(connection, query):
     #connection.autocommit = True
     cursor = connection.cursor()
+    print(cursor)
     try:
         cursor.execute(query)
         print("Query executed successfully")
@@ -70,9 +71,8 @@ def main():
             else:
                 query = "update dvobject set publicationdate='{}', createdate='{}', modificationtime='{}' where id={} and dtype='Dataverse'".format(
                     publicationdate, createdate, modificationtime, new_id)
-
+            print("query:" + query)
             execute_query(connection, query)
-            print(query)
         except Exception as e:
             print(e)
 

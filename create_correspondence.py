@@ -8,15 +8,14 @@ config = Config()
 
 def dataverse_root_search():
     url = "https://dataverse.lib.umanitoba.ca/api/search?q=*&type=dataverse&subtree=um&&per_page=1000"
-    token = "293ab9d6-6501-4180-9d44-270a97cd6c5c"
-    head = {'X-Dataverse-key': 'token {}'.format(token)}
+    token = config.api_token_origin
+    head = {'X-Dataverse-key': '{}'.format(token)}
     response = requests.get(url, headers=head)
 
     dict = response.json()
     dv = (dict['data']['items'])
     dv_id_lst = [x['identifier'] for x in dv]
-
-    return(dv_id_lst)
+    return (dv_id_lst)
 
 def find_correspondence(tree, parent, d):
     for data in tree:

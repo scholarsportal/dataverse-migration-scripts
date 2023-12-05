@@ -210,7 +210,6 @@ def update_files(files_list, total_files, DOI_NEW):
 
 
 def add_files(files_list, DOI_NEW, dir_path, total_files):
-    return(True)
 
     for file in files_list:
         logging.info("-----------------------");
@@ -413,7 +412,9 @@ def create_version(version, only, DOI, DOI_NEW, dir_path, total_files, correspon
             s = "{ \"datasetVersion\":" + s + "}"
 
             if (v != ':draft'):
+                print(DOI)
                 resp = config.api_target.create_dataset(config.dataverse_alias, s, DOI, False)
+                print(resp.json())
             else:
                 resp = config.api_target.create_dataset(config.dataverse_alias, s)
                 if resp.status_code == 201:
