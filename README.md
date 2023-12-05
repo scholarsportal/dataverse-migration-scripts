@@ -60,7 +60,7 @@ This script updates dates for migrated dataverses in the dvobject table of targe
 It needs the `dataverse_dates.json` file that can be generated from the original installation using the following query:
 
 ```sql
-select id, createdate, modificationtime, publicationdate from dvobject where where dtype='Dataverse'
+select id, createdate, modificationtime, publicationdate from dvobject where dtype='Dataverse'
 ```
 
 ...and convert it into JSON format.
