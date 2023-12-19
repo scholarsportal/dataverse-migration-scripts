@@ -1,3 +1,7 @@
+import os
+import re
+import subprocess
+
 from config import Config
 from pyDataverse.models import Datafile
 import json
@@ -8,6 +12,7 @@ import time
 from datetime import datetime
 import logging
 import zipfile
+import traceback
 
 config = Config()
 total_files_names = json.loads('{}')
@@ -210,7 +215,6 @@ def update_files(files_list, total_files, DOI_NEW):
 
 
 def add_files(files_list, DOI_NEW, dir_path, total_files):
-
     for file in files_list:
         logging.info("-----------------------");
         logging.info("Starting {0}".format(file["dataFile"]["filename"]))
@@ -218,7 +222,7 @@ def add_files(files_list, DOI_NEW, dir_path, total_files):
             filename_zip = False
             filename = file["dataFile"]["filename"]
             index = file["dataFile"]['storageIdentifier'].rfind('/')
-            storageIdentifier = file["dataFile"]['storageIdentifier'][index+1:]
+            storageIdentifier = file["dataFile"]['storageIdentifier'][index + 1:]
             if 'originalFileFormat' in file["dataFile"]:
                 originalFileFormat = file["dataFile"]['originalFileFormat']
                 logging.info("Original file format {0}".format(originalFileFormat))
@@ -233,7 +237,7 @@ def add_files(files_list, DOI_NEW, dir_path, total_files):
                 if typeFile == "application/zip":
                     filename_zip = True
                     f_output = dir_path + '/' + filename
-                    f_input = dir_path + '/' +storageIdentifier
+                    f_input = dir_path + '/' + storageIdentifier
                     with zipfile.ZipFile(f_output, 'w') as myzip:
                         myzip.write(f_input, filename)
 
@@ -256,44 +260,67 @@ def add_files(files_list, DOI_NEW, dir_path, total_files):
                 df_dict['restrict'] = file['restricted']
             if 'directoryLabel' in file:
                 df_dict['directoryLabel'] = file['directoryLabel']
-            #if 'label' in file:
-            #    df_dict['label'] = file['label']
+            if 'label' in file:
+                df_dict['label'] = file['label']
             if 'provFreeform' in file:
                 df_dict["provFreeform"] = file['provFreeform']
-
 
             df.set(df_dict)
             logging.info(df.json());
             logging.info("It is filename {0}".format(filename))
             if not filename_zip:
-                full_filename = dir_path + '/'  + storageIdentifier
+                full_filename = dir_path + '/' + storageIdentifier
             else:
                 full_filename = dir_path + '/' + filename
+            logging.info(full_filename)
+            file_size = os.path.getsize(full_filename)
+            logging.info("File size " + dir_path + "/" + storageIdentifier + " file size:" + str(file_size))
             url = config.api_target.base_url_api_native
             url += "/datasets/:persistentId/add?persistentId={0}".format(DOI_NEW)
-            files = {'file': (filename, open(full_filename, 'rb'), typeFile)}
-            headers = {'X-Dataverse-key': config.api_token_target}
-            check = check_lock(DOI_NEW)
-            if check == False:
-                return check
-            resp = requests.post(url, data={"jsonData": df.json()}, files=files, headers=headers)
+            if (file_size < 1073741824):
+                files = {'file': (filename, open(full_filename, 'rb'), typeFile)}
+                headers = {'X-Dataverse-key': config.api_token_target}
+                check = check_lock(DOI_NEW)
+                if check == False:
+                    return check
+                resp = requests.post(url, data={"jsonData": df.json()}, files=files, headers=headers)
 
-            if resp.status_code == 503:
-                logging.critical("503 - Server {} is unavailable".format(config.base_url_target))
-                sys.exit()
-            if resp.status_code == 200:
+                if resp.status_code == 503:
+                    logging.critical("503 - Server {} is unavailable".format(config.base_url_target))
+                    sys.exit()
+                if resp.status_code == 200:
+                    old_id = file["dataFile"]["id"]
+
+                    total_files[old_id] = {
+                        'new_id': resp.json()['data']['files'][0]['dataFile']['id'],
+                        'file': file
+                    }
+                else:
+                    logging.error(
+                        "add_files func: Error adding file. Error {}, filename {}, storageIdentifier {}, directory {}".format(
+                            resp.status_code, filename, storageIdentifier, dir_path))
+                    return False
+            else:
+                json_data = str(df.json()).replace("'", "'\''")
+                cmd = 'curl -H "X-Dataverse-key:' + config.api_token_target + '"' + ' -X POST -F ' + '"file=@' + \
+                      full_filename + ";type=" + typeFile + '" -F ' + "'jsonData=" + json_data + "' " + url
+                logging.info(cmd)
+                out = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+                # dataFile":{"id":1457365,
+                m = re.search('dataFile\":\{\"id\":(\d{0,25}),', str(out))
+                new_id = m.group(1)
+                logging.info(new_id)
                 old_id = file["dataFile"]["id"]
-
                 total_files[old_id] = {
-                    'new_id': resp.json()['data']['files'][0]['dataFile']['id'],
+                    'new_id': int(new_id),
                     'file': file
                 }
-            else:
-                logging.error("add_files func: Error adding file. Error {}, filename {}, storageIdentifier {}, directory {}".format(resp.status_code, filename, storageIdentifier, dir_path) )
-                return False
 
         except Exception as e:
-            logging.error("add_files error. Error {}, filename {}, storageIdentifier {}, directory {}".format(e, filename, storageIdentifier, dir_path))
+            logging.error(
+                "add_files error. Error {}, filename {}, storageIdentifier {}, directory {}".format(e, filename,
+                                                                                                    storageIdentifier,
+                                                                                                    dir_path))
             return False
 
     return True
