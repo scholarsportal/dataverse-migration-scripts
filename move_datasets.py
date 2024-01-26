@@ -6,10 +6,10 @@ from config import Config
 config = Config()
 
 def main():
-    with open('correspondense.json') as f:
+    with open('correspondence.json') as f:
         dataset_dataverse = json.load(f)
     print(dataset_dataverse)
-    with open('correspondense_old_new.json') as f:
+    with open('correspondence_old_new.json') as f:
         old_new_datasets = json.load(f)
     print(old_new_datasets)
     url = config.base_url_target + '/api/datasets/'

@@ -42,7 +42,6 @@ def execute_read_query(connection, query):
 
 def main():
 
-
     with open('dataverse_dates.json') as fd:
         s = fd.read()
         s_new = s.replace("\\n", "")

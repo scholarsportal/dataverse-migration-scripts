@@ -13,7 +13,7 @@ def main():
     print(len(datasets))
 
     for dataset in datasets:
-         #resp = config.api_target.destroy_dataset(dataset['dataset_id'], False)
+        #resp = config.api_target.destroy_dataset(dataset['dataset_id'], False)
         url = config.base_url_target
         url += "/api/datasets/{0}/modifyRegistrationMetadata".format(dataset['dataset_id'])
         headers = {'X-Dataverse-key': config.api_token_target}

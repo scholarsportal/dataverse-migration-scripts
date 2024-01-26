@@ -6,14 +6,14 @@ from config import Config
 
 config = Config()
 
-def find_correspondense(tree, parent, d):
+def find_correspondence(tree, parent, d):
     for data in tree:
         if data["type"] == "dataset":
             d[data['dataset_id']] = parent
         if data["type"] == "dataverse":
             if "children" in data:
                 if len(data["children"]) > 0:
-                    d = find_correspondense(data["children"], data["dataverse_alias"],d)
+                    d = find_correspondence(data["children"], data["dataverse_alias"],d)
 
     return d
 
@@ -23,10 +23,10 @@ def main():
     print(len(resp))
 
     d = {}
-    d = find_correspondense(resp, ":root", d)
+    d = find_correspondence(resp, ":root", d)
     print(d)
     print(len(d))
-    with open('correspondense.json', 'w') as outfile:
+    with open('correspondence.json', 'w') as outfile:
         json.dump(d, outfile, indent=4, sort_keys=True)
 
 if __name__ == "__main__":
