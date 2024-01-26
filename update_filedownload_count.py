@@ -60,19 +60,18 @@ def main():
     with open('all_data_files.json') as f:
         files = json.load(f)
 
-    with open('January_8/dataverse_guestbook.json') as f:
+    with open('dataverse_guestbook.json') as f:
         guestbookresponse = json.load(f)
 
-    with open('January_8/dataverse_filedownloads.json') as f:
+    with open('dataverse_filedownloads.json') as f:
         filedownload = json.load(f)
     with open('users.json') as fu:
         users = json.load(fu)
     with open('all_data_files.json') as df:
         files = json.load(df)
-    with open("January_8/dataverse_filemetadata.json") as m:
+    with open("dataverse_filemetadata.json") as m:
         filemetadatas = json.load(m)
-    with open("January_8/dataverse_filedownloads.json") as fdd:
-        filedownload = json.load(fdd)
+    
     set_datasetversion = set()
     set_datafile = set()    
     versions = {}
