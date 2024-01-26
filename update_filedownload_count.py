@@ -57,9 +57,6 @@ def main():
     with open('correspondence_old_new.json') as fd:
         datasets = json.load(fd)
 
-    with open('all_data_files.json') as f:
-        files = json.load(f)
-
     with open('dataverse_guestbook.json') as f:
         guestbookresponse = json.load(f)
 
