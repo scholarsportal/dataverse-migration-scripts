@@ -115,7 +115,9 @@ This script assigns roles for dataverses. It uses the `dataverses.json` file tha
 ### role_datasets.py
 
 This script assigns roles for datasets. It uses the `dataverses.json` file that was created by `create_dataverses.py`, and the `correspondence_explicit_groups.json` file that was created by `correspondence_explicit_groups.py`.
+### update_filedownload_count.py
 
+Optional: if one needs to preserve filedownload count, one will need contain of a guestbook, filedownloads and filemetadata tables in json format, as dataverse_guestbook.json, dataverse_filedownloads.json, dataverse_filemetadata.json. the script also uses correspondence_old_new.json, all_data_files.json and users.json
 ### change_registration_DOI.py
 
 This script updates DOI registration metadata with Datacite to ensure the updated dates are reflected.
